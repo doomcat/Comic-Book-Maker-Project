@@ -47,7 +47,7 @@ public class CanvasContainer extends InternalBox {
 		return sp;
 	}
 	
-	public void addToCanvas(JComponent item) {
-		canvas.add(item);
+	public void addToCanvas(DraggableIcon item, int x, int y) {
+		canvas.addToCanvas(item, x, y);
 	}
 }
