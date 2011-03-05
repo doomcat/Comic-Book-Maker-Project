@@ -31,26 +31,26 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 	public void mouseDragged(MouseEvent e) {
 		beingDragged = true;
 		mX = e.getX(); mY = e.getY();
-		//SystemState.rootPane.repaint();
+		SystemState.rootPane.repaint();
 		// TODO Implement GlassPane dragging and dropping
-		//this.getRootPane().getGlassPane().paint(getGraphics());
-		//Graphics glass = SystemState.glassPane.getGraphics();
-		//Icon icon = this.getIcon();
-		//Point pos = getLocationOnScreen();
-		//int sz = 4;
-		//glass.fillOval(e.getX()+pos.x-(sz*2), e.getY()+pos.y-(sz*2), sz, sz);
-		//this.getIcon().paintIcon(SystemState.glassPane, glass, e.getX()+pos.x-(icon.getIconWidth()/2), e.getY()+pos.y-(icon.getIconHeight()/2));
+		this.getRootPane().getGlassPane().paint(getGraphics());
+		Graphics glass = SystemState.glassPane.getGraphics();
+		Icon icon = this.getIcon();
+		Point pos = getLocationOnScreen();
+		int sz = 4;
+		glass.fillOval(e.getX()+pos.x-(sz*2), e.getY()+pos.y-(sz*2), sz, sz);
+		this.getIcon().paintIcon(SystemState.glassPane, glass, e.getX()+pos.x-(icon.getIconWidth()/2), e.getY()+pos.y-(icon.getIconHeight()/2));
 	}
 
-	public void paint(Graphics g) {
-		super.paint(g);
-		if(beingDragged) {
-			Graphics glass = SystemState.glassPane.getGraphics();
-			Icon icon = this.getIcon();
-			Point pos = getLocationOnScreen();
-			this.getIcon().paintIcon(SystemState.glassPane, glass, mX+pos.x-(icon.getIconWidth()/2), mY+pos.y-(icon.getIconHeight()/2));
-		}
-	}
+	//public void paint(Graphics g) {
+	//	super.paint(g);
+	//	if(beingDragged) {
+	//		Graphics glass = SystemState.glassPane.getGraphics();
+	//		Icon icon = this.getIcon();
+	//		Point pos = getLocationOnScreen();
+	//		this.getIcon().paintIcon(SystemState.glassPane, glass, mX+pos.x-(icon.getIconWidth()/2), mY+pos.y-(icon.getIconHeight()/2));
+	//	}
+	//}
 	
 	@Override
 	public void mouseMoved(MouseEvent e) { }

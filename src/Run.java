@@ -21,16 +21,17 @@ import javax.swing.JLayeredPane;
  	these classes, Run.main() simply starts
  	everything.
  	
- 	TODO dragging and dropping
 */
 
 public class Run {
-	//TODO create these classes
-/*	private Canvas canvas;
-	private ToolBox tools;
-	private PaintBox paint;
-	private ImageBox images;
-	private DnDPane topLayer;	*/
+	//TODO create these classes below:
+/*
+	private ToolBox tools; //toolbox for drawing tools, adding speech bubbles etc
+	private PaintBox paint; //choosing colours. possibly could be a child of toolbox
+*/
+	//TODO make canvas the background element which fills the screen,
+	//rather than an extra window. this is a bit difficult to do though
+	//TODO fix "save"/"save as" dialog
 	
 	Run() {
 		//Create all the objects

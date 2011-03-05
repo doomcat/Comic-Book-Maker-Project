@@ -49,12 +49,10 @@ public class ImageBox extends InternalBox implements ListSelectionListener {
 	}
 
 	public void showCategory(String category) {
-		System.out.println("Showing category "+category);
 		images.removeAll();
 		File directory = new File("assets/"+category);
 		for(File f : directory.listFiles()) {
 			images.add(new DraggableIcon("assets/"+category+"/"+f.getName()));
-			System.out.println("Loading "+f.getPath());
 		}
 		sp.revalidate();
 		repaint();
