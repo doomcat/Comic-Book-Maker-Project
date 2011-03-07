@@ -41,6 +41,7 @@ public class Run {
 		ImageBox images = new ImageBox();
 		ToolBox tools = new ToolBox();
 		JDesktopPane desktop = new JDesktopPane();
+		History history = new History();
 		
 		//Add menu to root layer
 		root.add(menu,BorderLayout.NORTH);
@@ -76,6 +77,7 @@ public class Run {
 		SystemState.rootPane = root;
 		SystemState.canvasPointer = canvas;
 		SystemState.glassPane = root.getGlassPane();
+		SystemState.history = history;
 		
 	}
 	

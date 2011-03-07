@@ -50,7 +50,9 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 		JMenuItem oUndo = new JMenuItem("Undo");
 		JMenuItem oRedo = new JMenuItem("Redo");
 		mEdit.add(oUndo);
+		oUndo.addActionListener(this);
 		mEdit.add(oRedo);
+		oRedo.addActionListener(this);
 		
 		JMenu mHelp = new JMenu("Help");
 		JMenuItem oHate = new JMenuItem("Haters Gonna Hate");
@@ -83,8 +85,18 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 				);
 			}
 			if(n == 0) { System.exit(0); }
+		} else if(action == "Undo") {
+			System.out.println("Doing undo");
+			SystemState.canvasPointer.setCanvas(
+					SystemState.history.undo()
+			);
+		} else if(action == "Redo") {
+			SystemState.canvasPointer.setCanvas(
+					SystemState.history.redo()
+			);
 		} else if(action == "New") {
 			SystemState.canvasPointer.getCanvas().clear();
+			SystemState.history.clear();
 			SystemState.unsaved = true;
 		} else if(action == "Save") {
 			JFileChooser fc = new JFileChooser();

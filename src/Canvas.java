@@ -31,6 +31,7 @@ public class Canvas extends JPanel implements Serializable {
 		items.add(item);
 		SystemState.canvasPointer.getScrollPane().revalidate();
 		repaint();
+		SystemState.history.addToHistory(this);
 	}
 	
 	public void setBgColor(Color c) {

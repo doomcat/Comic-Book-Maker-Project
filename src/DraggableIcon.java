@@ -31,15 +31,30 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 	public void mouseDragged(MouseEvent e) {
 		beingDragged = true;
 		mX = e.getX(); mY = e.getY();
-		SystemState.rootPane.repaint();
-		// TODO Implement GlassPane dragging and dropping
-		this.getRootPane().getGlassPane().paint(getGraphics());
+		//SystemState.rootPane.repaint();
+		
+		/*	I should probably explain this as it's an eyesore to look at.
+			To do drag and drop you want to draw whatever you're dragging
+			on top of all the other interface elements. To do that in Swing
+			you can paint stuff in the root layer's "glass pane", which is
+			drawn on top of everything else.
+			You have to translate the mouse position to get the right effect
+			though - which means getting the absolute position of the dragged
+			icon on screen, and adding it to the mouse's X and Y coordinates,
+			or it'll probably appear above and to the left of your mouse.
+			Then you call RootWindow.setDraggableIcon(), and next time root
+			window runs paint() it'll draw the icon at that position.
+		*/
+		
+		//this.getRootPane().getGlassPane().paint(getGraphics());
 		Graphics glass = SystemState.glassPane.getGraphics();
 		Icon icon = this.getIcon();
 		Point pos = getLocationOnScreen();
-		int sz = 4;
-		glass.fillOval(e.getX()+pos.x-(sz*2), e.getY()+pos.y-(sz*2), sz, sz);
-		this.getIcon().paintIcon(SystemState.glassPane, glass, e.getX()+pos.x-(icon.getIconWidth()/2), e.getY()+pos.y-(icon.getIconHeight()/2));
+		SystemState.rootPane.setDraggableIcon(this, e.getX()+pos.x-(icon.getIconWidth()/2), e.getY()+pos.y-(icon.getIconHeight()/2));
+		//int sz = 4;
+		//glass.fillOval(e.getX()+pos.x-(sz*2), e.getY()+pos.y-(sz*2), sz, sz);
+		//this.getIcon().paintIcon(SystemState.glassPane, glass, e.getX()+pos.x-(icon.getIconWidth()/2), e.getY()+pos.y-(icon.getIconHeight()/2));
+		SystemState.rootPane.repaint();
 	}
 
 	//public void paint(Graphics g) {
@@ -77,6 +92,9 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 			Point pos1 = getLocationOnScreen();
 			canvas.addToCanvas(new DraggableIcon(this.file), e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2), e.getY()+pos1.y-pos2.y-(icon.getIconHeight()/2));
 			//this.getIcon().paintIcon(canvas, canvas.getGraphics(), e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2), e.getY()+pos1.y-pos2.y-(icon.getIconHeight()/2));
+			SystemState.rootPane.setDraggableIcon(null, 0, 0);
+			SystemState.rootPane.repaint();
+			SystemState.unsaved = true;
 		}
 		beingDragged = false;
 	}
