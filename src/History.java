@@ -13,9 +13,10 @@ public class History {
 	private ByteArrayOutputStream bos;
 	private ObjectOutputStream out;
 	
-	History() {
+	History(Canvas c) {
 		history = new Vector<byte[]>();
-		historyIndex = -1;
+		addToHistory(c);
+		historyIndex = 0;
 	}
 	
 	private Canvas getCanvasAt(int i) throws ArrayIndexOutOfBoundsException {
@@ -66,8 +67,9 @@ public class History {
 		} catch(ArrayIndexOutOfBoundsException e) { return getCanvasAt(history.size()-1); }
 	}
 	
-	public void clear() {
+	public void clear(Canvas c) {
 		history.clear();
-		historyIndex = -1;
+		addToHistory(c);
+		historyIndex = 0;
 	}
 }

@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,14 +16,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
-public class Canvas extends JPanel implements Serializable {
-	private Color bgColor = new Color(255,255,255);
+public class Canvas extends JPanel implements Serializable, MouseMotionListener {
+	private Color bgColor;
 	Vector<DraggableIcon> items;
 	int w = 0, h = 0;
 	
 	Canvas() {
 		super();
+		bgColor = new Color(255,255,255);
 		items = new Vector<DraggableIcon>();
+		addMouseMotionListener(this);
 	}
 	public void addToCanvas(DraggableIcon item, int x, int y) {
 		item.cX = x; item.cY = y;
@@ -36,6 +40,11 @@ public class Canvas extends JPanel implements Serializable {
 	
 	public void setBgColor(Color c) {
 		bgColor = c;
+		repaint();
+	}
+	
+	public Color getBgColor() {
+		return bgColor;
 	}
 	
 	public void clear() {
@@ -70,5 +79,15 @@ public class Canvas extends JPanel implements Serializable {
 			i.getIcon().paintIcon(this, g, i.cX, i.cY);
 		}
 		this.getRootPane().revalidate();
+	}
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

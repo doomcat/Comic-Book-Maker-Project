@@ -96,14 +96,26 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 			);
 		} else if(action == "New") {
 			SystemState.canvasPointer.getCanvas().clear();
-			SystemState.history.clear();
+			SystemState.history.clear(SystemState.canvasPointer.getCanvas());
 			SystemState.unsaved = true;
 		} else if(action == "Save") {
+			File f;
+			if(SystemState.currentFile != null) { f = SystemState.currentFile; }
+			else {
+				JFileChooser fc = new JFileChooser();
+				fc.showSaveDialog(SystemState.rootPane);
+				f = fc.getSelectedFile();
+				SystemState.currentFile = f;
+			}
+			SystemState.canvasPointer.getCanvas().saveCanvasAs(f.getAbsolutePath());
+			SystemState.unsaved = false;	
+		} else if(action == "Save As") {
 			JFileChooser fc = new JFileChooser();
 			fc.showSaveDialog(SystemState.rootPane);
 			File f = fc.getSelectedFile();
+			SystemState.currentFile = f;
 			SystemState.canvasPointer.getCanvas().saveCanvasAs(f.getAbsolutePath());
-			SystemState.unsaved = false;	
+			SystemState.unsaved = false;
 		} else if(action == "Open") {
 			JFileChooser fc = new JFileChooser();
 			fc.showOpenDialog(SystemState.rootPane);
@@ -112,6 +124,7 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 				ObjectInputStream in = new ObjectInputStream(f);
 				Canvas canvas = (Canvas)in.readObject();
 				SystemState.canvasPointer.setCanvas(canvas);
+				SystemState.history.clear(canvas);
 				in.close();
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block

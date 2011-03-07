@@ -24,34 +24,37 @@ import javax.swing.JLayeredPane;
 */
 
 public class Run {
-	//TODO create these classes below:
-/*
-	private ToolBox tools; //toolbox for drawing tools, adding speech bubbles etc
-	private PaintBox paint; //choosing colours. possibly could be a child of toolbox
-*/
+
 	//TODO make canvas the background element which fills the screen,
 	//rather than an extra window. this is a bit difficult to do though
-	//TODO fix "save"/"save as" dialog
+	
+	//TODO be able to move things once on canvas
+	//TODO speech bubbles with foreground & background colours
+	//TODO change image drawing stuff so canvas objects can be resized
+	//TODO 
 	
 	Run() {
 		//Create all the objects
 		RootWindow root = new RootWindow();
 		MenuBar menu = new MenuBar();
+		
 		CanvasContainer canvas = new CanvasContainer();
+		SystemState.canvasPointer = canvas;
+		
 		ImageBox images = new ImageBox();
 		ToolBox tools = new ToolBox();
 		JDesktopPane desktop = new JDesktopPane();
-		History history = new History();
+		History history = new History(canvas.getCanvas());
 		
 		//Add menu to root layer
 		root.add(menu,BorderLayout.NORTH);
 		
 		//All the windows need to be made visible and given
 		//default sizes or they don't show up
-		tools.setVisible(true);
 		canvas.setVisible(true);
+		tools.setVisible(true);
 		images.setVisible(true);
-		tools.setSize(320,72);
+		tools.setSize(480,320);
 		canvas.setSize(640,480);
 		images.setSize(480,128);
 		
@@ -75,7 +78,6 @@ public class Run {
 		//and react to events through custom observer-observable
 		//static class (SystemState)
 		SystemState.rootPane = root;
-		SystemState.canvasPointer = canvas;
 		SystemState.glassPane = root.getGlassPane();
 		SystemState.history = history;
 		

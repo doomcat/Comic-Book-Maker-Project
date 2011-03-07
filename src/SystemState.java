@@ -12,9 +12,9 @@ import javax.swing.JComponent;
 
 public class SystemState {
 	protected static boolean unsaved = false;
-	protected static File currentFile;
 	protected static CanvasContainer canvasPointer;
 	protected static Component glassPane;
 	protected static RootWindow rootPane;
 	protected static History history;
+	protected static File currentFile;
 }

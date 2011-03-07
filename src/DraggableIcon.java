@@ -30,7 +30,7 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		beingDragged = true;
-		mX = e.getX(); mY = e.getY();
+		mX = e.getX()-SystemState.rootPane.getX(); mY = e.getY()-SystemState.rootPane.getY();
 		//SystemState.rootPane.repaint();
 		
 		/*	I should probably explain this as it's an eyesore to look at.
@@ -90,7 +90,7 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 			Icon icon = this.getIcon();
 			Point pos2 = canvas.getLocationOnScreen();
 			Point pos1 = getLocationOnScreen();
-			canvas.addToCanvas(new DraggableIcon(this.file), e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2), e.getY()+pos1.y-pos2.y-(icon.getIconHeight()/2));
+			canvas.addToCanvas(new CanvasIcon(this.file), e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2), e.getY()+pos1.y-pos2.y-(icon.getIconHeight()/2));
 			//this.getIcon().paintIcon(canvas, canvas.getGraphics(), e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2), e.getY()+pos1.y-pos2.y-(icon.getIconHeight()/2));
 			SystemState.rootPane.setDraggableIcon(null, 0, 0);
 			SystemState.rootPane.repaint();
