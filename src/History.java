@@ -1,14 +1,18 @@
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Vector;
 
-import org.jboss.serial.io.JBossObjectInputStream;
-import org.jboss.serial.io.JBossObjectOutputStream;
+import javax.imageio.ImageIO;
+
+//import org.jboss.serial.io.JBossObjectInputStream;
+//import org.jboss.serial.io.JBossObjectOutputStream;
 
 public class History {
 	private Vector<byte[]> history;
@@ -35,7 +39,11 @@ public class History {
 					history.elementAt(i)
 			);
 			in = new ObjectInputStream(bis);
-			return (Canvas) in.readObject();
+			Canvas tmp = (Canvas)in.readObject();
+			for(CanvasIcon x : tmp.items) {
+				x.setupImage();
+			}
+			return tmp;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;

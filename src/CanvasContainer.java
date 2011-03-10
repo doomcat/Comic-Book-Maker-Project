@@ -38,7 +38,14 @@ public class CanvasContainer extends InternalBox implements MouseListener, Mouse
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "delImg");
 		getActionMap().put("delImg", new AbstractAction() {
 			public void actionPerformed(ActionEvent evt) {
+				SystemState.history.addToHistory(canvas);
 				canvas.deleteSelectedElement();
+			}
+		});
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "flipHoriz");
+		getActionMap().put("flipHoriz", new AbstractAction() {
+			public void actionPerformed(ActionEvent evt) {
+				canvas.flipSelectedElement("horizontal");
 			}
 		});
 	}

@@ -25,14 +25,16 @@ import javax.swing.JLayeredPane;
 
 public class Run {
 
-	//TODO make canvas the background element which fills the screen,
-	//rather than an extra window. this is a bit difficult to do though
-	
-	//TODO be able to move things once on canvas
-	//TODO speech bubbles with foreground & background colours
-	//TODO fix delete button
-	//TODO make CanvasIcons serializable again
+	//TODO make canvas the background element which fills the screen, rather than an extra window. this is a bit difficult to do though
+	//TODO speech bubbles with foreground & background colours, custom fonts, etc.
 	//TODO prompt to save unsaved changes when closing program
+	//TODO button to add speech bubbles
+	//TODO thought bubbles and captions
+	//TODO flipping images?
+	//TODO comic strip FRAMES - important
+	//TODO comic strip frame dimension dialog on "File > New"
+	//TODO locking images to frame boundaries
+	//TODO z-index order for canvas items!
 	
 	Run() {
 		//Create all the objects
@@ -85,6 +87,7 @@ public class Run {
 		SystemState.history = history;
 		
 		//canvas.getCanvas().addToCanvas(new SpeechBubble("Hello"), 40, 40);
+		canvas.getCanvas().addToCanvas(new ComicFrame(120,120),40,40);
 		
 	}
 	

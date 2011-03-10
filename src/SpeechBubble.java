@@ -43,7 +43,7 @@ public class SpeechBubble extends CanvasIcon {
 	
 	public BufferedImage getImage() {
 		repaint();
-		BufferedImage bufImage = new BufferedImage(h, w, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage bufImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		this.paint(bufImage.getGraphics());
 		return bufImage;
 	}

@@ -16,11 +16,11 @@ public class CanvasIcon extends JComponent implements Serializable {
 	private String file;
 	private int[] serializableImage;
 	protected int w = 0, h = 0, x = 0, y = 0, dW = 0, dH = 0;
-	private boolean selected;
+	private boolean selected, fH, fV;
 	protected Color fgColor = new Color(0,0,0);
 	
 	CanvasIcon() { } //for SpeechBubble, ThoughtBubble etc. to override
-	
+
 	CanvasIcon(String file) {
 		this.file = file;
 		try {
@@ -46,6 +46,16 @@ public class CanvasIcon extends JComponent implements Serializable {
 	}
 	
 	public BufferedImage getImage() { return image; }
+	public void setImage(BufferedImage i) { image = i; }
+	public String getFile() { return file; }
+	public void setupImage() {
+		try {
+			if(file != null) image = ImageIO.read(new File(file));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public int getWidth() { return w; }
 	public int getDefaultWidth() { return dW; } 
 	public int getHeight() { return h; }
@@ -53,6 +63,10 @@ public class CanvasIcon extends JComponent implements Serializable {
 	public boolean isSelected() { return selected; }
 	public void setSelected(boolean s) { selected = s; }
 	public void setFgColor(Color c) { fgColor = c; }
+	public boolean isFlippedH() { return fH; }
+	public boolean isFlippedV() { return fV; }
+	public void setFlippedH(boolean i) { fH = i; }
+	public void setFlippedV(boolean i) { fV = i; }
 	
 	public int getcX() { return x; }
 	public void setcX(int x) { this.x = x; }

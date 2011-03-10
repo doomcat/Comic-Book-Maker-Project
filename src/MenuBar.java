@@ -133,6 +133,9 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 				FileInputStream f = new FileInputStream(fc.getSelectedFile().getAbsolutePath());
 				ObjectInputStream in = new ObjectInputStream(f);
 				Canvas canvas = (Canvas)in.readObject();
+				for(CanvasIcon x : canvas.items) {
+					x.setupImage();
+				}
 				SystemState.canvasPointer.setCanvas(canvas);
 				SystemState.history.clear(canvas);
 				in.close();

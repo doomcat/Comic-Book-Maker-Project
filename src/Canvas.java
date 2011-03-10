@@ -28,7 +28,7 @@ import javax.swing.KeyStroke;
 
 public class Canvas extends JPanel implements Serializable, MouseMotionListener, MouseListener {
 	private Color bgColor;
-	Vector<CanvasIcon> items;
+	protected Vector<CanvasIcon> items;
 	int w = 0, h = 0, lastX = 0, lastY = 0;
 	private CanvasIcon draggedItem;
 	private CanvasIcon resizedItem;
@@ -88,10 +88,20 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	}
 	
 	public CanvasIcon getSelectedElement() {
+		if(draggedItem != null) {
+			return draggedItem;
+		}
 		for(CanvasIcon i : items) {
 			if(i.isSelected()) return i;
 		}
 		return null;
+	}
+	
+	public void flipSelectedElement(String direction) {
+		if(draggedItem != null) {
+			if(direction == "horizontal") draggedItem.setFlippedH(true);
+			if(direction == "vertical") draggedItem.setFlippedV(true);
+		}
 	}
 	
 	public void deleteSelectedElement() {
@@ -125,7 +135,10 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 				g.fillRect((i.getcX()+i.getWidth()), (i.getcY()+i.getHeight()), 10, 10);
 			}
 			g.setPaintMode();
-			g.drawImage(i.getImage(), i.getcX(), i.getcY(), i.getWidth(), i.getHeight(), this);
+			int tmpW = i.getWidth(); int tmpH = i.getHeight();
+			if(i.isFlippedV()) tmpH = -tmpH;
+			if(i.isFlippedH()) tmpW = -tmpW;
+			g.drawImage(i.getImage(), i.getcX(), i.getcY(), tmpW, tmpH, this);
 		}
 		this.getRootPane().revalidate();
 	}
@@ -199,5 +212,8 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	@Override
 	public void mousePressed(MouseEvent arg0) { }
 	@Override
-	public void mouseReleased(MouseEvent e) { lastX = 0; lastY = 0; beingResized = false; resizedItem = null; }
+	public void mouseReleased(MouseEvent e) {
+		if(beingResized == true || resizedItem != null || draggedItem != null) SystemState.history.addToHistory(this);
+		lastX = 0; lastY = 0; beingResized = false; resizedItem = null;
+	}
 }
