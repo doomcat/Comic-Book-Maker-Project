@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel{
 
-    private BufferedImage image;
+    transient private BufferedImage image;
 
     public ImagePanel(String file) {
        try {                

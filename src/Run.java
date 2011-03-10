@@ -54,9 +54,11 @@ public class Run {
 		canvas.setVisible(true);
 		tools.setVisible(true);
 		images.setVisible(true);
-		tools.setSize(480,320);
+		tools.setSize(440,180);
 		canvas.setSize(640,480);
-		images.setSize(480,128);
+		images.setSize(960,142);
+		canvas.move(0, 140);
+		tools.move(570, 526);
 		
 		//The toolboxes and canvas then need to be added
 		//to the DesktopPane
@@ -71,7 +73,7 @@ public class Run {
 		//MAKE IT HAPPEN BIZZATCH.
 		root.setTitle("Comic Book Maker");
 		root.setVisible(true);
-		root.setSize(new Dimension(720,600));
+		root.setSize(new Dimension(1024,768));
 		root.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Link the parts of system together - they listen

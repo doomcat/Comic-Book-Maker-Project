@@ -2,6 +2,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 
 import javax.swing.Icon;
@@ -14,7 +17,7 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 
 
-public class CanvasContainer extends InternalBox {
+public class CanvasContainer extends InternalBox implements MouseListener, MouseMotionListener {
 	private Canvas canvas;
 	private JScrollPane sp;
 	
@@ -48,6 +51,50 @@ public class CanvasContainer extends InternalBox {
 	}
 	
 	public void addToCanvas(DraggableIcon item, int x, int y) {
+		item.addMouseListener(this);
+		item.addMouseMotionListener(this);
 		canvas.addToCanvas(item, x, y);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

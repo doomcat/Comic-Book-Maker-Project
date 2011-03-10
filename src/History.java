@@ -1,9 +1,14 @@
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Vector;
+
+import org.jboss.serial.io.JBossObjectInputStream;
+import org.jboss.serial.io.JBossObjectOutputStream;
 
 public class History {
 	private Vector<byte[]> history;
@@ -12,6 +17,11 @@ public class History {
 	private ObjectInputStream in;
 	private ByteArrayOutputStream bos;
 	private ObjectOutputStream out;
+	
+	//Using JBoss supposedly makes serialization quicker, but doesn't work for this
+	//at the moment. Investigate later.
+	//private JBossObjectInputStream in;
+	//private JBossObjectOutputStream out;
 	
 	History(Canvas c) {
 		history = new Vector<byte[]>();
