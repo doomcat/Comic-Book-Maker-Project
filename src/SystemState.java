@@ -1,4 +1,5 @@
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 public class SystemState {
@@ -17,4 +19,6 @@ public class SystemState {
 	protected static RootWindow rootPane;
 	protected static History history;
 	protected static File currentFile;
+	protected static boolean retainAspect = false;
+
 }

@@ -1,12 +1,16 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,17 +18,21 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 
-public class Canvas extends JPanel implements Serializable, MouseMotionListener, MouseListener, KeyListener {
+public class Canvas extends JPanel implements Serializable, MouseMotionListener, MouseListener {
 	private Color bgColor;
 	Vector<CanvasIcon> items;
-	int w = 0, h = 0;
+	int w = 0, h = 0, lastX = 0, lastY = 0;
 	private CanvasIcon draggedItem;
-	private boolean beingDragged = false;
+	private CanvasIcon resizedItem;
+	private boolean beingResized = false;
 	
 	Canvas() {
 		super();
@@ -32,21 +40,24 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		items = new Vector<CanvasIcon>();
 		addMouseMotionListener(this);
 		addMouseListener(this);
-		addKeyListener(this);
 		//this.setF
 	}
 	
 	public void addToCanvas(CanvasIcon item, int x, int y) {
 		item.setcX(x); item.setcY(y);
-		if(item.getcX()+item.getWidth() > w) w = item.getcX()+item.getWidth();
-		if(item.getcY()+item.getHeight() > h) h = item.getcY()+item.getHeight();
-		setPreferredSize(new Dimension(w,h));
-		//item.addMouseMotionListener(this);
-		//item.addMouseListener(this);
 		items.add(item);
-		SystemState.canvasPointer.getScrollPane().revalidate();
-		repaint();
+		resizeCanvas();
 		SystemState.history.addToHistory(this);
+		repaint();
+	}
+	
+	public void resizeCanvas() {
+		for(CanvasIcon i : items) {
+			if(i.getcX()+i.getWidth() > w) w = i.getcX()+i.getWidth()+10;
+			if(i.getcY()+i.getHeight() > h) h = i.getcY()+i.getHeight()+10;
+		}
+		setPreferredSize(new Dimension(w,h));
+		SystemState.canvasPointer.getScrollPane().revalidate();
 	}
 	
 	public void setBgColor(Color c) {
@@ -76,15 +87,26 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		}
 	}
 	
+	public CanvasIcon getSelectedElement() {
+		for(CanvasIcon i : items) {
+			if(i.isSelected()) return i;
+		}
+		return null;
+	}
+	
 	public void deleteSelectedElement() {
 		if(draggedItem != null) {
 			items.remove(draggedItem);
 			draggedItem = null;
 			repaint();
+			SystemState.history.addToHistory(this);
 		}
 	}
 	
 	public void paint(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		int tW = 0, tH = 0;
 		super.paintComponent(g);
 		g.setColor(bgColor);
@@ -107,23 +129,48 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		}
 		this.getRootPane().revalidate();
 	}
+	
+	//taken straight from http://stackoverflow.com/questions/4530736/how-to-capture-a-swing-gui-element
+	//(used for exporting comic as .png image - didn't need to change anything)
+	public void exportAsPNG(File imageFile) throws IOException {
+	    BufferedImage bufImage = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_RGB);
+	    for(CanvasIcon i : items) { i.setSelected(false); }
+	    this.paint(bufImage.createGraphics());   
+	    imageFile.createNewFile();  
+	    ImageIO.write(bufImage, "png", imageFile);
+	}
+	
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
+		int dX = 0, dY = 0;
 		CanvasIcon i = draggedItem;
-		//for(DraggableIcon i : items) {
-		//	if(draggedItem == i) {
 			if(draggedItem != null) {
 				if((x >= i.getcX() && x <= i.getcX()+i.getWidth()) &&
-					(y >= i.getcY() && y <= i.getcY()+i.getHeight())) {
+					(y >= i.getcY() && y <= i.getcY()+i.getHeight()) && beingResized == false) {
 					i.setcX(x-(i.getWidth()/2));
-					i.setcY(y-(i.getWidth()/2));
+					i.setcY(y-(i.getHeight()/2));
+					lastX = 0; lastY = 0;
+				}
+				else if((x >= (i.getcX()+i.getWidth()) && x <= (i.getcX()+i.getWidth())+10) &&
+						(y >= i.getcY()+i.getHeight()) && (y <= i.getcY()+i.getHeight()+10)) {
+					resizedItem = i;
 				}
 			}
-		//}
+			if(resizedItem != null) {
+				if(beingResized == false) { dX = 0; dY = 0; lastX = 0; lastY = 0; }
+				else { dX = x-lastX; dY = y-lastY; }
+				beingResized = true;
+				if(SystemState.retainAspect == true) {
+					i.resize(i.getWidth()+dX, i.getHeight()*((i.getDefaultWidth())/i.getDefaultHeight())+dX);
+				} else {
+					i.resize(i.getWidth()+dX, i.getHeight()+dY);
+				}
+				lastX = x; lastY = y;
+			}
+		resizeCanvas();
 		repaint();
-		
 	}
 	
 	@Override
@@ -144,26 +191,7 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		if(somethingSelected == false) draggedItem = null;
 		repaint();
 	}
-	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		System.out.println("Key Pressed");
-		// TODO Auto-generated method stub
-		if(e.getKeyCode() == KeyEvent.VK_DELETE) { deleteSelectedElement(); }
-	}
-	
 	@Override
 	public void mouseEntered(MouseEvent arg0) { }
 	@Override
@@ -171,5 +199,5 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	@Override
 	public void mousePressed(MouseEvent arg0) { }
 	@Override
-	public void mouseReleased(MouseEvent arg0) { }
+	public void mouseReleased(MouseEvent e) { lastX = 0; lastY = 0; beingResized = false; resizedItem = null; }
 }

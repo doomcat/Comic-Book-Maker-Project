@@ -30,8 +30,9 @@ public class Run {
 	
 	//TODO be able to move things once on canvas
 	//TODO speech bubbles with foreground & background colours
-	//TODO change image drawing stuff so canvas objects can be resized
-	//TODO 
+	//TODO fix delete button
+	//TODO make CanvasIcons serializable again
+	//TODO prompt to save unsaved changes when closing program
 	
 	Run() {
 		//Create all the objects
@@ -82,6 +83,8 @@ public class Run {
 		SystemState.rootPane = root;
 		SystemState.glassPane = root.getGlassPane();
 		SystemState.history = history;
+		
+		//canvas.getCanvas().addToCanvas(new SpeechBubble("Hello"), 40, 40);
 		
 	}
 	

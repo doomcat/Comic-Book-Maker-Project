@@ -104,7 +104,7 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 			
 			//dropping an icon basically creates a new object on the canvas. positions have to be translated
 			//so that it shows up at the right place on canvas.
-			canvas.addToCanvas(new CanvasIcon(this.file,canvas),
+			canvas.addToCanvas(new CanvasIcon(this.file),
 					//(mouse X coordinate + icon's X coordinate - canvases X coordinate - half the width of the icon)
 					e.getX()+pos1.x-pos2.x-(icon.getIconWidth()/2),
 					// same as above but with Y coordinates

@@ -32,7 +32,12 @@ public class ToolBox extends InternalBox implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		// TODO Auto-generated method stub
-		SystemState.canvasPointer.getCanvas().setBgColor(colours.getColor());
+		CanvasIcon selected = SystemState.canvasPointer.getCanvas().getSelectedElement();
+		if(selected != null) {
+			selected.setFgColor(colours.getColor());
+		} else {
+			SystemState.canvasPointer.getCanvas().setBgColor(colours.getColor());
+		}
+		SystemState.canvasPointer.getCanvas().repaint();
 	}
-	
 }

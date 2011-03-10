@@ -1,8 +1,10 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.imageio.ImageIO;
@@ -11,14 +13,17 @@ import javax.swing.JOptionPane;
 
 public class CanvasIcon extends JComponent implements Serializable {
 	transient private BufferedImage image;
+	private String file;
 	private int[] serializableImage;
-	private int w = 0, h = 0, x = 0, y = 0, dW = 0, dH = 0;
-	private Canvas canvas;
+	protected int w = 0, h = 0, x = 0, y = 0, dW = 0, dH = 0;
 	private boolean selected;
+	protected Color fgColor = new Color(0,0,0);
 	
-	CanvasIcon(String file, Canvas c) {
+	CanvasIcon() { } //for SpeechBubble, ThoughtBubble etc. to override
+	
+	CanvasIcon(String file) {
+		this.file = file;
 		try {
-			canvas = c;
 			image = ImageIO.read(new File(file));
 			//serializableImage = ImageIO.
 			dW = image.getWidth(); dH = image.getHeight();
@@ -26,8 +31,15 @@ public class CanvasIcon extends JComponent implements Serializable {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(getRootPane(), "Sorry! The file couldn't be opened :(");
 		}
+		//image.
 	}
-
+	
+	/*public void readObject(ObjectInputStream aStream) throws IOException, ClassNotFoundException {
+		aStream.defaultReadObject();
+		//BufferedImage
+	}*/
+	
+	@Override
 	public void resize(int width, int height) {
 		w = width;
 		h = height;
@@ -40,6 +52,7 @@ public class CanvasIcon extends JComponent implements Serializable {
 	public int getDefaultHeight() { return dH; }
 	public boolean isSelected() { return selected; }
 	public void setSelected(boolean s) { selected = s; }
+	public void setFgColor(Color c) { fgColor = c; }
 	
 	public int getcX() { return x; }
 	public void setcX(int x) { this.x = x; }

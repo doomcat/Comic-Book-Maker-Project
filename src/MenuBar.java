@@ -25,7 +25,7 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 		JMenuItem oNew = new JMenuItem("New");
 		
 		JMenuItem omSave = new JMenu("Save");
-		JMenuItem oExport = new JMenuItem("Export");
+		JMenuItem oExport = new JMenuItem("Export as .png");
 		JMenuItem oSave = new JMenuItem("Save");
 		JMenuItem oSaveAs = new JMenuItem("Save As...");
 
@@ -40,7 +40,7 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 		omSave.add(oSaveAs);
 		oSaveAs.addActionListener(this);
 		omSave.add(oExport);
-		omSave.addActionListener(this);
+		oExport.addActionListener(this);
 		mFile.add(oOpen);
 		oOpen.addActionListener(this);
 		mFile.add(oExit);
@@ -116,6 +116,16 @@ public class MenuBar extends JMenuBar implements ActionListener,ItemListener {
 			SystemState.currentFile = f;
 			SystemState.canvasPointer.getCanvas().saveCanvasAs(f.getAbsolutePath());
 			SystemState.unsaved = false;
+		} else if(action == "Export as .png") {
+			JFileChooser fc = new JFileChooser();
+			fc.showSaveDialog(SystemState.rootPane);
+			File f = fc.getSelectedFile();
+			try {
+				SystemState.canvasPointer.getCanvas().exportAsPNG(f);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		} else if(action == "Open") {
 			JFileChooser fc = new JFileChooser();
 			fc.showOpenDialog(SystemState.rootPane);
