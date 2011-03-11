@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -18,6 +19,7 @@ public class RootWindow extends JFrame {
 		super();
 		BorderLayout bl = new BorderLayout();
 		setLayout(bl);
+		this.setBackground(Color.BLUE);
 	}
 	
 	public void setDraggableIcon(DraggableIcon i, int x, int y) {

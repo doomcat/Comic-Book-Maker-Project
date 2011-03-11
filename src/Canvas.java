@@ -44,6 +44,13 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	}
 	
 	public void addToCanvas(CanvasIcon item, int x, int y) {
+		if(x == -1 || y == -1) {
+			x = (SystemState.canvasPointer.getScrollPane().getViewport().getX()+
+					(SystemState.canvasPointer.getScrollPane().getViewport().getWidth()/2));
+			y = (SystemState.canvasPointer.getScrollPane().getViewport().getY()+
+					(SystemState.canvasPointer.getScrollPane().getViewport().getHeight()/2));
+		}
+		System.out.println("X: "+x+", Y: "+y);
 		item.setcX(x); item.setcY(y);
 		items.add(item);
 		resizeCanvas();
@@ -52,12 +59,17 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	}
 	
 	public void resizeCanvas() {
+		int tW = 0, tH = 0;
 		for(CanvasIcon i : items) {
-			if(i.getcX()+i.getWidth() > w) w = i.getcX()+i.getWidth()+10;
-			if(i.getcY()+i.getHeight() > h) h = i.getcY()+i.getHeight()+10;
+			if(i.getcX()+i.getWidth() > tW) tW = i.getcX()+i.getWidth()+50;
+			if(i.getcY()+i.getHeight() > tH) tH = i.getcY()+i.getHeight()+50;
 		}
-		setPreferredSize(new Dimension(w,h));
+		if(w > tW) tW = w;
+		if(h > tH) tH = h;
+		setPreferredSize(new Dimension(tW,tH));
+		setSize(tW, tH);
 		SystemState.canvasPointer.getScrollPane().revalidate();
+		//SystemState.canvasPointer.getScrollPane().validate();
 	}
 	
 	public void setBgColor(Color c) {
@@ -201,7 +213,12 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 				somethingSelected = true;
 			}
 		}
-		if(somethingSelected == false) draggedItem = null;
+		if(somethingSelected == false) { draggedItem = null; }
+		//when we select something we want to bring it to the front,
+		//drawn over the top of everything else. so if something's been
+		//selected, remove it from the vector and add it to the end again,
+		//so that it gets drawn last in paint().
+		else { items.remove(draggedItem); items.add(draggedItem); }
 		repaint();
 	}
 

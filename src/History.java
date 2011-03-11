@@ -56,14 +56,12 @@ public class History {
 			out = new ObjectOutputStream(bos);
 			if(history.size() > 0) {
 				for(int i=history.size()-1; i>historyIndex; i--) {
-					System.out.println("Removing deprecated history at "+i+",size: "+history.size());
 					history.remove(i);
 				}
 			}	
 			out.writeObject(c);
 			history.add(bos.toByteArray());
 			historyIndex++;
-			System.out.println("Adding to history, index: "+historyIndex+", size: "+history.size());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,14 +69,12 @@ public class History {
 	}
 	
 	public Canvas undo() {
-		System.out.println("Calling undo, index: "+historyIndex+", size: "+history.size());
 		if(historyIndex > 0) historyIndex--;
 		return getCanvasAt(historyIndex);
 	}
 	
 	public Canvas redo() {
 		try{ 
-			System.out.println("Calling redo, index: "+historyIndex+", size: "+history.size());
 			if(historyIndex < history.size()) historyIndex++;
 			else{ historyIndex = history.size()-1; }
 			return getCanvasAt(historyIndex);

@@ -18,10 +18,14 @@ public class SpeechBubble extends CanvasIcon {
 	private Font font;
 	private int w = 120, h = 120, tW = 0, tH = 0; //text width and height
 	
+	SpeechBubble(String text, int w, int h) {
+		this.w = w; this.h = h;
+		this.text = text;
+		font = new Font("Dialog", Font.PLAIN, 14);
+	}
+	
 	SpeechBubble(String text) {
-		//this.text = text
-		//String tmpTxt = text;
-		this.text = JOptionPane.showInputDialog("Speech bubble text:");
+		this.text = text
 		font = new Font("Dialog", Font.PLAIN, 14);
 	}
 	

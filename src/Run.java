@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,6 @@ public class Run {
 	//TODO comic strip FRAMES - important
 	//TODO comic strip frame dimension dialog on "File > New"
 	//TODO locking images to frame boundaries
-	//TODO z-index order for canvas items!
 	
 	Run() {
 		//Create all the objects
@@ -47,6 +47,7 @@ public class Run {
 		ImageBox images = new ImageBox();
 		ToolBox tools = new ToolBox();
 		JDesktopPane desktop = new JDesktopPane();
+		desktop.setBackground(new Color(153,217,234));
 		History history = new History(canvas.getCanvas());
 		
 		//Add menu to root layer
@@ -57,11 +58,11 @@ public class Run {
 		canvas.setVisible(true);
 		tools.setVisible(true);
 		images.setVisible(true);
-		tools.setSize(440,180);
+		tools.setSize(440,228);
 		canvas.setSize(640,480);
 		images.setSize(960,142);
 		canvas.move(0, 140);
-		tools.move(570, 526);
+		tools.move(570, 480);
 		
 		//The toolboxes and canvas then need to be added
 		//to the DesktopPane
@@ -86,8 +87,8 @@ public class Run {
 		SystemState.glassPane = root.getGlassPane();
 		SystemState.history = history;
 		
-		//canvas.getCanvas().addToCanvas(new SpeechBubble("Hello"), 40, 40);
-		canvas.getCanvas().addToCanvas(new ComicFrame(120,120),40,40);
+		//canvas.getCanvas().addToCanvas(new SpeechBubble("Hello",120,120), 40, 40);
+		//canvas.getCanvas().addToCanvas(new ComicFrame(120,120),40,40);
 		
 	}
 	
