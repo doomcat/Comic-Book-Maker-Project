@@ -12,8 +12,8 @@ import javax.swing.JLayeredPane;
 /*
  	COMIC BOOK MAKER PROJECT
  	Work of:
- 		Dean Allen			dea@aber.ac.uk
- 		Matthew Hathaway	mah@aber.ac.uk
+ 		Dean Allen			dea1@aber.ac.uk
+ 		Matthew Hathaway	mah17@aber.ac.uk
  		Owain Jones 		odj@aber.ac.uk
  		
  	Run class: contains the main method which
@@ -27,6 +27,7 @@ import javax.swing.JLayeredPane;
 public class Run {
 
 	//TODO make canvas the background element which fills the screen, rather than an extra window. this is a bit difficult to do though
+	//TODO being able to paint on canvas
 	//TODO speech bubbles with foreground & background colours, custom fonts, etc.
 	//TODO prompt to save unsaved changes when closing program
 	//TODO button to add speech bubbles

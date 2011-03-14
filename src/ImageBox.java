@@ -23,6 +23,7 @@ public class ImageBox extends InternalBox implements ListSelectionListener {
 	
 	ImageBox() {
 		super();
+		setIconifiable(true);
 		setTitle("Props");
 		
 		bl = new BorderLayout();

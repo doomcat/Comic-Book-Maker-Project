@@ -40,7 +40,6 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		items = new Vector<CanvasIcon>();
 		addMouseMotionListener(this);
 		addMouseListener(this);
-		//this.setF
 	}
 	
 	public void addToCanvas(CanvasIcon item, int x, int y) {
@@ -50,30 +49,37 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 			y = (SystemState.canvasPointer.getScrollPane().getViewport().getY()+
 					(SystemState.canvasPointer.getScrollPane().getViewport().getHeight()/2));
 		}
-		System.out.println("X: "+x+", Y: "+y);
 		item.setcX(x); item.setcY(y);
 		items.add(item);
 		resizeCanvas();
+		setSelectedElement(item);
 		SystemState.history.addToHistory(this);
 		repaint();
 	}
 	
 	public void resizeCanvas() {
 		int tW = 0, tH = 0;
+		//Loop through the items on the canvas, checking their sizes and
+		//X,Y coordinates. If the sum of their position & size are bigger
+		//than the canvas's width and height, make the canvas that width &
+		//height, plus 50 pixels to force the scrollbar to update immediately.
 		for(CanvasIcon i : items) {
 			if(i.getcX()+i.getWidth() > tW) tW = i.getcX()+i.getWidth()+50;
 			if(i.getcY()+i.getHeight() > tH) tH = i.getcY()+i.getHeight()+50;
 		}
-		if(w > tW) tW = w;
-		if(h > tH) tH = h;
+
+		//bug: seem to have to set both preferred size and actual size
+		//to get the scrollbars to update correctly.
 		setPreferredSize(new Dimension(tW,tH));
 		setSize(tW, tH);
 		SystemState.canvasPointer.getScrollPane().revalidate();
-		//SystemState.canvasPointer.getScrollPane().validate();
 	}
 	
 	public void setBgColor(Color c) {
+		//set background colour but also repaint
+		//so the change is seen immediately.
 		bgColor = c;
+		setBackground(bgColor);
 		repaint();
 	}
 	
@@ -95,8 +101,15 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 			out.close();
 		} catch(IOException e) {
 			JOptionPane.showMessageDialog(SystemState.rootPane, "There was an error saving your file! Sorry :(");
-			e.printStackTrace();
 		}
+	}
+	
+	public void setSelectedElement(CanvasIcon item) {
+		for(CanvasIcon i : items) {
+			i.setSelected(false);
+		}
+		item.setSelected(true);
+		draggedItem = item;
 	}
 	
 	public CanvasIcon getSelectedElement() {
@@ -104,6 +117,8 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 			return draggedItem;
 		}
 		for(CanvasIcon i : items) {
+			//there should only be one selected element,
+			//so return it as soon as one is found.
 			if(i.isSelected()) return i;
 		}
 		return null;
@@ -117,42 +132,48 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	}
 	
 	public void deleteSelectedElement() {
+		//delete whatever element has been selected,
+		//then add this change to the history.
 		if(draggedItem != null) {
 			items.remove(draggedItem);
 			draggedItem = null;
+			resizeCanvas();
 			repaint();
 			SystemState.history.addToHistory(this);
 		}
 	}
 	
 	public void paint(Graphics g) {
+		//Make resizing of images look nice; bicubic interpolation
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		int tW = 0, tH = 0;
+		
+		//Draw the background colour
 		super.paintComponent(g);
-		g.setColor(bgColor);
-		Rectangle size = SystemState.canvasPointer.getScrollPane().getVisibleRect();
-		if(size.width > w) tW = size.width;
-		else tW = w;
-		if(size.height > h) tH = size.height;
-		else tH = h;
-		g.fillRect(0, 0, tW, tH);
-		//g.setColor(new Color(0,0,0));
+
+		//Paint the canvas items.
 		for(CanvasIcon i : items) {
+			//If item is selected, draw a box around it
 			if(i.isSelected()) {
 				g.setColor(new Color(255,255,255));
+				//The box should always be the opposite colour of its background,
+				//so it's always visible.
 				g.setXORMode(new Color(0,0,0));
 				g.drawRect(i.getcX()-10, i.getcY()-10, i.getWidth()+20, i.getHeight()+20);
 				g.fillRect((i.getcX()+i.getWidth()), (i.getcY()+i.getHeight()), 10, 10);
 			}
+			//Return to 'paint mode' from XOR mode, so it won't invert the actual image.
 			g.setPaintMode();
 			int tmpW = i.getWidth(); int tmpH = i.getHeight();
+			//If the image is meant to be flipped, invert width/height so it draws
+			//it backwards.
 			if(i.isFlippedV()) tmpH = -tmpH;
 			if(i.isFlippedH()) tmpW = -tmpW;
+			
+			//Draw image to the canvas.
 			g.drawImage(i.getImage(), i.getcX(), i.getcY(), tmpW, tmpH, this);
 		}
-		this.getRootPane().revalidate();
 	}
 	
 	//taken straight from http://stackoverflow.com/questions/4530736/how-to-capture-a-swing-gui-element
@@ -171,49 +192,68 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		int y = e.getY();
 		int dX = 0, dY = 0;
 		CanvasIcon i = draggedItem;
-			if(draggedItem != null) {
-				if((x >= i.getcX() && x <= i.getcX()+i.getWidth()) &&
-					(y >= i.getcY() && y <= i.getcY()+i.getHeight()) && beingResized == false) {
-					i.setcX(x-(i.getWidth()/2));
-					i.setcY(y-(i.getHeight()/2));
-					lastX = 0; lastY = 0;
-				}
-				else if((x >= (i.getcX()+i.getWidth()) && x <= (i.getcX()+i.getWidth())+10) &&
-						(y >= i.getcY()+i.getHeight()) && (y <= i.getcY()+i.getHeight()+10)) {
-					resizedItem = i;
-				}
+		
+		if(draggedItem != null) {
+			//check if mouse is over currently selected item (if there is an
+			//item selected)
+			if((x >= i.getcX() && x <= i.getcX()+i.getWidth()) &&
+				(y >= i.getcY() && y <= i.getcY()+i.getHeight()) && beingResized == false) {
+				//if mouse over item, make item follow mouse's X,Y coordinates
+				//but from the item's center.
+				i.setcX(x-(i.getWidth()/2));
+				i.setcY(y-(i.getHeight()/2));
+				lastX = 0; lastY = 0;
 			}
-			if(resizedItem != null) {
-				if(beingResized == false) { dX = 0; dY = 0; lastX = 0; lastY = 0; }
-				else { dX = x-lastX; dY = y-lastY; }
-				beingResized = true;
-				if(SystemState.retainAspect == true) {
-					i.resize(i.getWidth()+dX, i.getHeight()*((i.getDefaultWidth())/i.getDefaultHeight())+dX);
-				} else {
-					i.resize(i.getWidth()+dX, i.getHeight()+dY);
-				}
-				lastX = x; lastY = y;
+			//if the mouse is inside the small black box beneath the bottom-right
+			//corner of the item, the user wants to resize it. set resizedItem to
+			//point to the item.
+			else if((x >= (i.getcX()+i.getWidth()-10) && x <= (i.getcX()+i.getWidth())+10) &&
+					(y >= i.getcY()+i.getHeight()-10) && (y <= i.getcY()+i.getHeight()+10)) {
+				resizedItem = i;
 			}
+		}
+		
+		if(resizedItem != null) {
+			//if we've only started resizing the image, we want to reset all the
+			//variables used in calculating how much the mouse has moved since the
+			//method was last called, so that it's not a big number that makes
+			//the item itself irrationally big/small.
+			if(beingResized == false) { dX = 0; dY = 0; lastX = 0; lastY = 0; }
+			else { dX = x-lastX; dY = y-lastY; }
+			beingResized = true;
+			if(SystemState.retainAspect == true) {
+				i.resize(i.getWidth()+dX, i.getHeight()*((i.getDefaultWidth())/i.getDefaultHeight())+dX);
+			} else {
+				i.resize(i.getWidth()+dX, i.getHeight()+dY);
+			}
+			lastX = x; lastY = y;
+		}
+		
 		resizeCanvas();
 		repaint();
 	}
 	
 	@Override
-	public void mouseMoved(MouseEvent e) { }
-	
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX(); int y = e.getY();
 		boolean somethingSelected = false;
+		//loop through the canvas items and set them all as 'not selected'
 		for(CanvasIcon i : items) {
 			i.setSelected(false);
+			//if the mouse is over an item, set it as selected again
+			//and set draggedItem to point to the item.
 			if((x >= i.getcX() && x <= i.getcX()+i.getWidth()) &&
 				(y >= i.getcY() && y <= i.getcY()+i.getHeight())) {
 				draggedItem = i; i.setSelected(true);
 				somethingSelected = true;
 			}
 		}
+		
+		//bugfix: if nothing's selected, but draggedItem still points
+		//to something, we need to set it to null so nothing's moved
+		//around or resized by accident.
 		if(somethingSelected == false) { draggedItem = null; }
+		
 		//when we select something we want to bring it to the front,
 		//drawn over the top of everything else. so if something's been
 		//selected, remove it from the vector and add it to the end again,
@@ -223,14 +263,22 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	}
 
 	@Override
+	public void mouseReleased(MouseEvent e) {
+		//if something has been moved or resized, add it to history.
+		if(beingResized == true || resizedItem != null || draggedItem != null) SystemState.history.addToHistory(this);
+		//then reset all the variables used in mouseDragged().
+		lastX = 0; lastY = 0; beingResized = false; resizedItem = null;
+	}
+	
+	//None of the events below need to be caught, but implementing the interface
+	//requires we have them defined in code, so these methods are all intentionally
+	//left blank.
+	@Override
+	public void mouseMoved(MouseEvent e) { }
+	@Override
 	public void mouseEntered(MouseEvent arg0) { }
 	@Override
 	public void mouseExited(MouseEvent arg0) { }
 	@Override
 	public void mousePressed(MouseEvent arg0) { }
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if(beingResized == true || resizedItem != null || draggedItem != null) SystemState.history.addToHistory(this);
-		lastX = 0; lastY = 0; beingResized = false; resizedItem = null;
-	}
 }

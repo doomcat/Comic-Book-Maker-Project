@@ -20,5 +20,5 @@ public class SystemState {
 	protected static History history;
 	protected static File currentFile;
 	protected static boolean retainAspect = false;
-
+	protected static Vector<String> errors = new Vector<String>();
 }

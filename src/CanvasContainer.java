@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -21,31 +22,22 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 
 
-public class CanvasContainer extends InternalBox implements MouseListener, MouseMotionListener {
+public class CanvasContainer extends InternalBox {
 	private Canvas canvas;
 	private JScrollPane sp;
 	
 	CanvasContainer() {
 		super();
 		setTitle("Canvas");
-		//setBackground(new Color(255,0,0));
-		//canvas = new JLabel(new ImageIcon("beardyman.png"),SwingConstants.CENTER);
 		canvas = new Canvas();
 		BorderLayout bl = new BorderLayout();
 		setLayout(bl);
 		sp = new JScrollPane(canvas);
 		add(sp,BorderLayout.CENTER);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "delImg");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke((char) KeyEvent.VK_DELETE), "delImg");
 		getActionMap().put("delImg", new AbstractAction() {
 			public void actionPerformed(ActionEvent evt) {
-				SystemState.history.addToHistory(canvas);
 				canvas.deleteSelectedElement();
-			}
-		});
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "flipHoriz");
-		getActionMap().put("flipHoriz", new AbstractAction() {
-			public void actionPerformed(ActionEvent evt) {
-				canvas.flipSelectedElement("horizontal");
 			}
 		});
 	}
@@ -65,53 +57,5 @@ public class CanvasContainer extends InternalBox implements MouseListener, Mouse
 	
 	public JScrollPane getScrollPane() {
 		return sp;
-	}
-	
-	public void addToCanvas(DraggableIcon item, int x, int y) {
-		item.addMouseListener(this);
-		item.addMouseMotionListener(this);
-		canvas.addToCanvas(item, x, y);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }

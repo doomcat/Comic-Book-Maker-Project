@@ -20,6 +20,8 @@ public class ToolBox extends InternalBox implements ChangeListener, ActionListen
 	
 	ToolBox() {
 		super();
+		setIconifiable(true);
+		setResizable(false);
 		setTitle("Tools");
 		
 		FlowLayout fl = new FlowLayout();

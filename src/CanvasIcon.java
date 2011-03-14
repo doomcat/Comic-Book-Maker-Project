@@ -20,29 +20,28 @@ public class CanvasIcon extends JComponent implements Serializable {
 	protected Color fgColor = new Color(0,0,0);
 	
 	CanvasIcon() { } //for SpeechBubble, ThoughtBubble etc. to override
+	//since they're procedurally drawn, not images loaded from a file.
 
 	CanvasIcon(String file) {
 		this.file = file;
 		try {
 			image = ImageIO.read(new File(file));
-			//serializableImage = ImageIO.
 			dW = image.getWidth(); dH = image.getHeight();
 			w = dW; h = dH;
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(getRootPane(), "Sorry! The file couldn't be opened :(");
+			SystemState.errors.add(file+" could not be loaded.");
 		}
-		//image.
 	}
-	
-	/*public void readObject(ObjectInputStream aStream) throws IOException, ClassNotFoundException {
-		aStream.defaultReadObject();
-		//BufferedImage
-	}*/
-	
+
 	@Override
 	public void resize(int width, int height) {
-		w = width;
-		h = height;
+		//resize, check width and height args are over
+		//one, so that when the item is deselected it
+		//is big enough to be selected again.
+		if(width > 1 && height > 1) {
+			w = width;
+			h = height;
+		}
 	}
 	
 	public BufferedImage getImage() { return image; }
@@ -51,14 +50,15 @@ public class CanvasIcon extends JComponent implements Serializable {
 	public void setupImage() {
 		try {
 			if(file != null) image = ImageIO.read(new File(file));
+			dW = image.getWidth(); dH = image.getHeight();
+			w = dW; h = dH;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			SystemState.errors.add(file+" could not be loaded.");
 		}
 	}
-	public int getWidth() { return w; }
+	public int getWidth() { return Math.abs(w); }
 	public int getDefaultWidth() { return dW; } 
-	public int getHeight() { return h; }
+	public int getHeight() { return Math.abs(h); }
 	public int getDefaultHeight() { return dH; }
 	public boolean isSelected() { return selected; }
 	public void setSelected(boolean s) { selected = s; }
