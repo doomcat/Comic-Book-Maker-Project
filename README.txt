@@ -2,7 +2,8 @@ This is the Git repository for our Comic Book project.
 (Code by Owain Jones, Dean Allen and Matthew Hathaway)
 -----
 
-The app can be ran from bin/Run.javac
+The app can be ran in its JAR form by running comicbookmaker.jar
+The app can also be ran from bin/Run.class (java bin/Run)
 And the source is in src/
 
 Put assets (images to drag and drop onto canvas) in assets folder.

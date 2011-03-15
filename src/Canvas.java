@@ -33,11 +33,13 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	private CanvasIcon draggedItem;
 	private CanvasIcon resizedItem;
 	private boolean beingResized = false;
+	private ItemContextMenu menu;
 	
 	Canvas() {
 		super();
 		bgColor = new Color(255,255,255);
 		items = new Vector<CanvasIcon>();
+		menu = new ItemContextMenu();
 		addMouseMotionListener(this);
 		addMouseListener(this);
 	}
@@ -55,6 +57,7 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		setSelectedElement(item);
 		SystemState.history.addToHistory(this);
 		repaint();
+		System.out.println("Added to canvas - "+item);
 	}
 	
 	public void resizeCanvas() {
@@ -280,5 +283,8 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	@Override
 	public void mouseExited(MouseEvent arg0) { }
 	@Override
-	public void mousePressed(MouseEvent arg0) { }
+	public void mousePressed(MouseEvent e) {
+		if(e.getButton() == MouseEvent.BUTTON3) menu.popup(getSelectedElement(), getLocationOnScreen().x+e.getX(), getLocationOnScreen().y+e.getY());
+		else { menu.hide(); }
+	}
 }

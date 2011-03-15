@@ -17,6 +17,7 @@ public class SpeechBubble extends CanvasIcon {
 	private String text;
 	private Font font;
 	private int w = 120, h = 120, tW = 0, tH = 0; //text width and height
+	private Color fgColor = new Color(0,0,0);
 	
 	SpeechBubble(String text, int w, int h) {
 		this.w = w; this.h = h;
@@ -25,7 +26,7 @@ public class SpeechBubble extends CanvasIcon {
 	}
 	
 	SpeechBubble(String text) {
-		this.text = text
+		this.text = text;
 		font = new Font("Dialog", Font.PLAIN, 14);
 	}
 	
@@ -50,5 +51,9 @@ public class SpeechBubble extends CanvasIcon {
 		BufferedImage bufImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		this.paint(bufImage.getGraphics());
 		return bufImage;
+	}
+	
+	public void popupChangeText() {
+		JOptionPane.showInputDialog("");
 	}
 }

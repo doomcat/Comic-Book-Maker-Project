@@ -36,6 +36,7 @@ public class Run {
 	//TODO comic strip FRAMES - important
 	//TODO comic strip frame dimension dialog on "File > New"
 	//TODO locking images to frame boundaries
+	//TODO posable stickmen
 	
 	Run() {
 		//Create all the objects
