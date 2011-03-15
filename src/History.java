@@ -14,6 +14,13 @@ import javax.imageio.ImageIO;
 //import org.jboss.serial.io.JBossObjectInputStream;
 //import org.jboss.serial.io.JBossObjectOutputStream;
 
+/*
+ * History.java: this provides a vector of Canvas objects. It is meant to be
+ * added to whenever a change is made to the canvas.
+ * 
+ * It deals with undo/redo logic; 
+ */
+
 public class History {
 	private Vector<byte[]> history;
 	private int historyIndex;

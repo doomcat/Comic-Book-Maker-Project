@@ -22,6 +22,12 @@ public class CanvasIcon extends JComponent implements Serializable {
 	CanvasIcon() { } //for SpeechBubble, ThoughtBubble etc. to override
 	//since they're procedurally drawn, not images loaded from a file.
 
+	/*
+	 * CanvasIcon takes a file as string and attempts to load it.
+	 * If the file can't be loaded, add an error to the errors list.
+	 * When the file loading progress is completed by the program,
+	 * any errors in the global list should be displayed in a dialogue.
+	 */
 	CanvasIcon(String file) {
 		this.file = file;
 		try {
@@ -33,11 +39,16 @@ public class CanvasIcon extends JComponent implements Serializable {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.Component#resize(int, int)
+	 *	resize, check width and height args are over
+	 *	one, so that when the item is deselected it
+	 *	is big enough to be selected again.
+	 */
 	@Override
 	public void resize(int width, int height) {
-		//resize, check width and height args are over
-		//one, so that when the item is deselected it
-		//is big enough to be selected again.
+
 		if(width > 1 && height > 1) {
 			w = width;
 			h = height;
@@ -47,6 +58,11 @@ public class CanvasIcon extends JComponent implements Serializable {
 	public BufferedImage getImage() { return image; }
 	public void setImage(BufferedImage i) { image = i; }
 	public String getFile() { return file; }
+	
+	/*
+	 * setupImage: if this object is being de-serialized, we need
+	 * to load the image again (BufferedImages aren't serializable).
+	 */
 	public void setupImage() {
 		try {
 			if(file != null) image = ImageIO.read(new File(file));
@@ -56,6 +72,7 @@ public class CanvasIcon extends JComponent implements Serializable {
 			SystemState.errors.add(file+" could not be loaded.");
 		}
 	}
+	
 	public int getWidth() { return Math.abs(w); }
 	public int getDefaultWidth() { return dW; } 
 	public int getHeight() { return Math.abs(h); }

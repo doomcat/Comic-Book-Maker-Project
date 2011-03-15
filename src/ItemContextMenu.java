@@ -7,6 +7,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+/*
+ * ItemContextMenu: a right-click menu which should show up on canvas items.
+ * Provide functionality like 'delete', 'change text', 'flip image'.
+ */
 
 public class ItemContextMenu extends JPopupMenu implements ActionListener {
 	private CanvasIcon object;
@@ -25,7 +29,7 @@ public class ItemContextMenu extends JPopupMenu implements ActionListener {
 		add(flipH); flipH.addActionListener(this);
 		JMenuItem flipV = new JMenuItem("Flip Vertical");
 		add(flipV); flipV.addActionListener(this);
-		JMenuItem reset = new JMenuItem("Reset to original size");
+		JMenuItem reset = new JMenuItem("Make original size");
 		add(reset); reset.addActionListener(this);
 	}
 	
@@ -57,7 +61,7 @@ public class ItemContextMenu extends JPopupMenu implements ActionListener {
 			}
 			if(e.getActionCommand() == "Flip Horizontal") object.setFlippedH(!object.isFlippedH());
 			if(e.getActionCommand() == "Flip Vertical") object.setFlippedV(!object.isFlippedV());
-			if(e.getActionCommand() == "Reset to original size") object.resize(object.getDefaultWidth(), object.getDefaultHeight());
+			if(e.getActionCommand() == "Make original size") object.resize(object.getDefaultWidth(), object.getDefaultHeight());
 			hide();
 			SystemState.canvasPointer.getCanvas().repaint();
 		}

@@ -44,6 +44,12 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		addMouseListener(this);
 	}
 	
+	/*
+	 * addToCanvas: add a CanvasIcon at a certain position.
+	 * if x and y arguments are -1, set to center of the viewport, so that whatever you
+	 * create is always in view. Then add this change to the history and force the canvas
+	 * to repaint so the new object can be seen.
+	 */
 	public void addToCanvas(CanvasIcon item, int x, int y) {
 		if(x == -1 || y == -1) {
 			x = (SystemState.canvasPointer.getScrollPane().getViewport().getX()+
@@ -57,15 +63,17 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		setSelectedElement(item);
 		SystemState.history.addToHistory(this);
 		repaint();
-		System.out.println("Added to canvas - "+item);
 	}
 	
+	/*
+	 * resizeCanvas: Loop through the items on the canvas, checking their sizes and
+	 *	X,Y coordinates. If the sum of their position & size are bigger
+	 *	than the canvas's width and height, make the canvas that width &
+	 *	height, plus 50 pixels to force the scrollbar to update immediately.
+	 */
 	public void resizeCanvas() {
 		int tW = 0, tH = 0;
-		//Loop through the items on the canvas, checking their sizes and
-		//X,Y coordinates. If the sum of their position & size are bigger
-		//than the canvas's width and height, make the canvas that width &
-		//height, plus 50 pixels to force the scrollbar to update immediately.
+		
 		for(CanvasIcon i : items) {
 			if(i.getcX()+i.getWidth() > tW) tW = i.getcX()+i.getWidth()+50;
 			if(i.getcY()+i.getHeight() > tH) tH = i.getcY()+i.getHeight()+50;
@@ -96,6 +104,9 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		repaint();
 	}
 	
+	/*
+	 * saveCanvasAs: serialize the Canvas to a file (filename)
+	 */
 	public void saveCanvasAs(String filename) {
 		try{
 			FileOutputStream fos = new FileOutputStream(filename);
@@ -107,6 +118,10 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		}
 	}
 	
+	/*
+	 * setSelectedElement: loop through the canvas items,
+	 * make sure everything's deselected, then set @item to selected.
+	 */
 	public void setSelectedElement(CanvasIcon item) {
 		for(CanvasIcon i : items) {
 			i.setSelected(false);
@@ -115,6 +130,10 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		draggedItem = item;
 	}
 	
+	/*
+	 * getSelectedElement: loop through items, return first selected
+	 * element.
+	 */
 	public CanvasIcon getSelectedElement() {
 		if(draggedItem != null) {
 			return draggedItem;
@@ -146,6 +165,14 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see javax.swing.JComponent#paint(java.awt.Graphics)
+	 * paint: loop through all the canvas items, painting them at their
+	 * custom sizes and positions on canvas. flip them if their isFlipped*() methods
+	 * return true. if selected, draw rectangle around them with handle user can drag
+	 * to resize selected image.
+	 */
 	public void paint(Graphics g) {
 		//Make resizing of images look nice; bicubic interpolation
 		Graphics2D g2 = (Graphics2D) g;
@@ -190,6 +217,13 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	    ImageIO.write(bufImage, "png", imageFile);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	 * mouseDragged: if an item is selected, move it around the canvas following the coordinates
+	 * of the mouse cursor. if an item is being dragged by the bottom-right square, user wants
+	 * to resize item, so resize it instead.
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		int x = e.getX();
@@ -226,7 +260,7 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 			else { dX = x-lastX; dY = y-lastY; }
 			beingResized = true;
 			if(SystemState.retainAspect == true) {
-				i.resize(i.getWidth()+dX, i.getHeight()*((i.getDefaultWidth())/i.getDefaultHeight())+dX);
+				i.resize(i.getWidth()+dX, i.getHeight()*((i.getWidth())/i.getHeight())+dX);
 			} else {
 				i.resize(i.getWidth()+dX, i.getHeight()+dY);
 			}
@@ -237,6 +271,13 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		repaint();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 * mouseClicked: if mouse is over something, select it. otherwise, deselect
+	 * everything. if an item's been clicked, bring it to the front by moving it to
+	 * the end of the items vector.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX(); int y = e.getY();
@@ -274,6 +315,18 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 		lastX = 0; lastY = 0; beingResized = false; resizedItem = null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 * mousePressed: if right click is pressed, bring up an ItemContextMenu at
+	 * the right position.
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if(e.getButton() == MouseEvent.BUTTON3) menu.popup(getSelectedElement(), getLocationOnScreen().x+e.getX(), getLocationOnScreen().y+e.getY());
+		else { menu.hide(); }
+	}
+	
 	//None of the events below need to be caught, but implementing the interface
 	//requires we have them defined in code, so these methods are all intentionally
 	//left blank.
@@ -283,9 +336,4 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 	public void mouseEntered(MouseEvent arg0) { }
 	@Override
 	public void mouseExited(MouseEvent arg0) { }
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if(e.getButton() == MouseEvent.BUTTON3) menu.popup(getSelectedElement(), getLocationOnScreen().x+e.getX(), getLocationOnScreen().y+e.getY());
-		else { menu.hide(); }
-	}
 }

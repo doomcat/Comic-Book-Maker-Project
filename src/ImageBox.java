@@ -15,6 +15,11 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/*
+ * ImageBox: display draggable thumbnails of images in scrolling panes, and their
+ * categories.
+ */
+
 public class ImageBox extends InternalBox implements ListSelectionListener {
 	private FlowLayout fl;
 	private BorderLayout bl;
@@ -49,6 +54,9 @@ public class ImageBox extends InternalBox implements ListSelectionListener {
 		catList.addListSelectionListener(this);
 	}
 
+	/*
+	 * showCategory: load images from category into the images JPanel (replacing old images).
+	 */
 	public void showCategory(String category) {
 		images.removeAll();
 		File directory = new File("assets/"+category);
@@ -59,6 +67,11 @@ public class ImageBox extends InternalBox implements ListSelectionListener {
 		repaint();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	 * valueChanged: find out which category has been selected in the list, invoke showCategory.
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		JList list = (JList) e.getSource();

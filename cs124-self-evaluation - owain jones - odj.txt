@@ -1,0 +1,49 @@
+PROJECT SELF-EVALUATION
+
+Owain Jones - odj@aber.ac.uk
+
+Year:       2010 - 2011
+
+Module:     CS124
+
+Assignment Number:         1
+
+
+Assignment Description:    Group Project - Comic Book Maker GUI written in Java
+
+
+
+Worth 20% of final mark for this module
+
+
+How many hours (approx.) did you spend on this assignment? 40
+
+
+Expected Letter Grade:    B
+
+
+   And why?
+
+I think I showed a good grasp of how to use Java's OO concepts such as interfaces
+and extension, general user interface design ideas, and the internal workings of Swing.
+
+I implemented lots of features in the code of our project, and hopefully my code is
+designed to be easily extendable in future. I've had plenty of fun making comics and
+images in the application!
+
+
+What did you Learn? 
+Lots about GUI design patterns, how to build thread-safe UI applications using Java
+and Swing, lots about how Java's garbage collection works (we use it heavily due
+to how we do undo & redo etc.)
+
+I also learnt how we can work as a group and play to our strengths! Matthew being excellent
+at trawling the web for images, drawing them by hand in crayon, etc., and Dean coming up with
+general ideas for the project which I then wanted to implement (some of which are still in the
+todo list in Run.java of the source code).
+
+
+
+
+
+

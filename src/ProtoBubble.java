@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 
-public class ProtoBubble extends CanvasIcon {
+abstract class ProtoBubble extends CanvasIcon {
 	protected String text;
 	private Font fontSmall;
 	private Font fontBig;
@@ -28,13 +28,18 @@ public class ProtoBubble extends CanvasIcon {
 	transient private Graphics g;
 	protected transient Graphics2D g2;
 	
+	/*
+	 * ProtoBubble - this class is for Speech Bubbles, Thought Bubbles
+	 * and Captions to extend. It handles basic drawing calculations -
+	 * how big the font can be depending on the size of the object.
+	 */
 	ProtoBubble(String text, int w, int h) {
 		super();
 		this.w = w; this.h = h;
 		this.text = text;
 		fontSmall = new Font("Dialog", Font.PLAIN, 12);
 		fontBig = new Font("Dialog", Font.PLAIN, 18);
-		fontHuge = new Font("Dialog", Font.PLAIN, 26);
+		fontHuge = new Font("Dialog", Font.PLAIN, 32);
 		font = fontSmall;
 	}
 	
@@ -43,9 +48,8 @@ public class ProtoBubble extends CanvasIcon {
 		w = 120; h = 120;
 		this.text = text;
 		fontSmall = new Font("Dialog", Font.PLAIN, 12);
-		fontBig = new Font("Dialog", Font.PLAIN, 18);
-		fontHuge = new Font("Dialog", Font.PLAIN, 26);
-		font = fontSmall;
+		fontBig = new Font("Dialog", Font.PLAIN, 20);
+		fontHuge = new Font("Dialog", Font.PLAIN, 28);
 	}
 	
 	public void paint(Graphics g) {
@@ -53,27 +57,37 @@ public class ProtoBubble extends CanvasIcon {
 		g2 = (Graphics2D) this.g;
 		g2.setColor(Color.WHITE);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		calculateFontSize(g2);
 		g2.fillOval(0, 0, w-1, h-1);
-		g2.setColor(fgColor);
+		g2.setColor(super.fgColor);
+		calculateFontSize(g2);
 		g2.drawString(text, (w/2)-(tW/2), (h/2)+(tH/4));
 	}
 	
-	public void calculateFontSize(Graphics2D graphics) {
-		//I'm sorry, this code has a headache right now and isn't a damn machine
-		//Consult Ben the grinding machine on how to make things big
-		setFont(fontHuge);
-		FontRenderContext frc = graphics.getFontRenderContext();
-		Rectangle2D bounds = graphics.getFont().getStringBounds(text,frc);
+	/*
+	 * calculateFontSize: check for 
+	 */
+	public void calculateFontSize(Graphics2D tG2) {
+		tG2.setFont(fontHuge);
+		FontRenderContext frc = tG2.getFontRenderContext();
+		Rectangle2D bounds = tG2.getFont().getStringBounds(text,frc);	
 		tW = (int)bounds.getWidth(); tH = (int)bounds.getHeight();
-		if((int)bounds.getWidth() > w-20 || (int)bounds.getHeight() > h-20) setFont(fontBig);
-		bounds = graphics.getFont().getStringBounds(text,frc);
+		
+		if(tW > w-20 || tH > h-20) tG2.setFont(fontBig);
+		bounds = tG2.getFont().getStringBounds(text,frc);
 		tW = (int)bounds.getWidth(); tH = (int)bounds.getHeight();
-		if((int)bounds.getWidth() > w-20 || (int)bounds.getHeight() > h-20) setFont(fontSmall);
-		bounds = graphics.getFont().getStringBounds(text,frc);
+		
+		if(tW > w-20 || tH > h-20) tG2.setFont(fontSmall);
+		bounds = tG2.getFont().getStringBounds(text,frc);
 		tW = (int)bounds.getWidth(); tH = (int)bounds.getHeight();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see CanvasIcon#resize(int, int)
+	 * speech bubbles should be at least 10px wide and high, so we can
+	 * select them and resize them. bug workaround. call super.resize()
+	 * so CanvasIcon.resize()'s logic is invoked too.
+	 */
 	@Override
 	public void resize(int w, int h) {
 		super.resize(w,h);
@@ -83,12 +97,24 @@ public class ProtoBubble extends CanvasIcon {
 		else{ this.w = 10; this.h = 10; }
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see CanvasIcon#getImage()
+	 * Canvas draws Images passed to it by the CanvasIcons.
+	 * Since anything inheriting from ProtoBubble is drawing simple shapes and
+	 * text procedurally, it has no image to pass. Convert the graphics object
+	 * into a BufferedImage in this overriding method.
+	 */
 	public BufferedImage getImage() {
 		BufferedImage bufImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		this.paint(bufImage.getGraphics());
 		return bufImage;
 	}
 	
+	/*
+	 * change the text of this item, but only if the user enters some text in the dialogue
+	 * which pops up.
+	 */
 	public void popupChangeText() {
 		String input = JOptionPane.showInputDialog("What text should this speech bubble have?");
 		if(input != null && input != "") text = input;

@@ -12,6 +12,11 @@ public class ThoughtBubble extends ProtoBubble {
 		super(text,w,h);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see ProtoBubble#paint(java.awt.Graphics)
+	 * ThoughtBubble.paint: draw ProtoBubble, but add 
+	 */
 	public void paint(Graphics g) {
 		super.paint(g);
 		super.g2.setColor(Color.WHITE);
