@@ -27,6 +27,7 @@ import javax.swing.JLayeredPane;
 public class Run {
 
 	//TODO make canvas the background element which fills the screen, rather than an extra window. this is a bit difficult to do though
+	//TODO images as background
 	//TODO being able to paint on canvas
 	//TODO speech bubbles with foreground & background colours, custom fonts, etc.
 	//TODO prompt to save unsaved changes when closing program
@@ -60,11 +61,11 @@ public class Run {
 		canvas.setVisible(true);
 		tools.setVisible(true);
 		images.setVisible(true);
-		tools.setSize(440,228);
+		tools.setSize(440,270);
 		canvas.setSize(640,480);
 		images.setSize(960,142);
 		canvas.move(0, 140);
-		tools.move(570, 480);
+		tools.move(570, 440);
 		
 		//The toolboxes and canvas then need to be added
 		//to the DesktopPane

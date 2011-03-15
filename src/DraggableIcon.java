@@ -47,6 +47,7 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		setPreferredSize(new Dimension(96,96));
+		setToolTipText("File: "+new File(file).getName());
 	}
 
 	public int getcX() {
@@ -128,7 +129,8 @@ public class DraggableIcon extends JLabel implements MouseMotionListener, MouseL
 	public void mouseClicked(MouseEvent e) { }
 
 	@Override
-	public void mouseEntered(MouseEvent e) { }
+	public void mouseEntered(MouseEvent e) {
+	}
 
 	@Override
 	public void mouseExited(MouseEvent e) { }

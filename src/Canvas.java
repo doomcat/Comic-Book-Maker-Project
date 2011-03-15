@@ -169,13 +169,14 @@ public class Canvas extends JPanel implements Serializable, MouseMotionListener,
 			//Return to 'paint mode' from XOR mode, so it won't invert the actual image.
 			g.setPaintMode();
 			int tmpW = i.getWidth(); int tmpH = i.getHeight();
+			int tmpX = i.getcX(); int tmpY = i.getcY();
 			//If the image is meant to be flipped, invert width/height so it draws
 			//it backwards.
-			if(i.isFlippedV()) tmpH = -tmpH;
-			if(i.isFlippedH()) tmpW = -tmpW;
+			if(i.isFlippedH()) { tmpX += tmpW; tmpW = -tmpW; }
+			if(i.isFlippedV()) { tmpY += tmpH; tmpH = -tmpH; }
 			
 			//Draw image to the canvas.
-			g.drawImage(i.getImage(), i.getcX(), i.getcY(), tmpW, tmpH, this);
+			g.drawImage(i.getImage(), tmpX, tmpY, tmpW, tmpH, this);
 		}
 	}
 	

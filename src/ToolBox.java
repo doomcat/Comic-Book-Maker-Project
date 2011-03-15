@@ -40,9 +40,9 @@ public class ToolBox extends InternalBox implements ChangeListener, ActionListen
 		JButton bAddBubble = new JButton("Speech Bubble");
 		bC.add(bAddBubble); bAddBubble.addActionListener(this);
 		JButton bAddThought = new JButton("Thought Bubble");
-		bC.add(bAddThought);
+		bC.add(bAddThought); bAddThought.addActionListener(this);
 		JButton bAddCaption = new JButton("Caption");
-		bC.add(bAddCaption);
+		bC.add(bAddCaption); bAddCaption.addActionListener(this);
 		
 		cC.setLayout(fl);
 		bPaintMode = new JToggleButton("Paint Mode");
@@ -76,6 +76,8 @@ public class ToolBox extends InternalBox implements ChangeListener, ActionListen
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == "Frame") SystemState.canvasPointer.getCanvas().addToCanvas(new ComicFrame(100,100), -1, -1);
 		if(e.getActionCommand() == "Speech Bubble") SystemState.canvasPointer.getCanvas().addToCanvas(new SpeechBubble("Text"), -1, -1);
+		if(e.getActionCommand() == "Thought Bubble") SystemState.canvasPointer.getCanvas().addToCanvas(new ThoughtBubble("Text"), -1, -1);
+		if(e.getActionCommand() == "Caption") SystemState.canvasPointer.getCanvas().addToCanvas(new Caption("Text"), -1, -1);
 		if(e.getSource() == bSwitchResize) SystemState.retainAspect = bSwitchResize.isSelected();
 		if(e.getSource() == bPaintMode) SystemState.paintMode = bPaintMode.isSelected();
 	}

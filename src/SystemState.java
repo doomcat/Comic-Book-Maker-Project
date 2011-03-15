@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JToolTip;
 
 //SystemState - so we don't have to pass different objects
 //to each other in their constructors, anything that is intended
