@@ -30,4 +30,5 @@ public class SystemState {
 	protected static boolean retainAspect = false;
 	protected static Vector<String> errors = new Vector<String>();
 	protected static boolean paintMode = false;
+	protected static boolean isApplet = false;
 }

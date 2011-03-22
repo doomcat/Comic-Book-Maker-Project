@@ -2,12 +2,24 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /*
  	COMIC BOOK MAKER PROJECT
@@ -33,22 +45,50 @@ public class Run {
 	//TODO comic strip frame dimension dialog on "File > New"
 	//TODO locking images to frame boundaries
 	
+	private CanvasContainer canvas;
+	private JDesktopPane desktop;
+	private RootWindow root;
+	
 	Run() {
-		//Create all the objects
-		RootWindow root = new RootWindow();
-		MenuBar menu = new MenuBar();
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		CanvasContainer canvas = new CanvasContainer();
+		//Create all the objects
+		root = new RootWindow();
+		MenuBar menu = new MenuBar();
+
+		canvas = new CanvasContainer();
 		SystemState.canvasPointer = canvas;
 		
 		ImageBox images = new ImageBox();
 		ToolBox tools = new ToolBox();
-		JDesktopPane desktop = new JDesktopPane();
+		desktop = new JDesktopPane();
 		desktop.setBackground(new Color(153,217,234));
 		History history = new History(canvas.getCanvas());
 		
 		//Add menu to root layer
 		root.add(menu,BorderLayout.NORTH);
+		
+		//The toolboxes and canvas then need to be added
+		//to the DesktopPane
+		root.desktop = desktop;
+		root.canvas = canvas;
+		desktop.add(canvas,1);
+		desktop.add(tools,0);
+		desktop.add(images,0);
 		
 		//All the windows need to be made visible and given
 		//default sizes or they don't show up
@@ -56,16 +96,9 @@ public class Run {
 		tools.setVisible(true);
 		images.setVisible(true);
 		tools.setSize(440,270);
-		canvas.setSize(640,480);
+		canvas.setSize(desktop.getSize());
 		images.setSize(960,142);
-		canvas.move(0, 140);
 		tools.move(570, 440);
-		
-		//The toolboxes and canvas then need to be added
-		//to the DesktopPane
-		desktop.add(tools);
-		desktop.add(images);
-		desktop.add(canvas);
 		
 		//Then add desktop to root and make sure it takes
 		//up as much space as it can (BorderLayout.CENTER)
@@ -83,14 +116,11 @@ public class Run {
 		SystemState.rootPane = root;
 		SystemState.glassPane = root.getGlassPane();
 		SystemState.history = history;
-		
-		//canvas.getCanvas().addToCanvas(new SpeechBubble("Hello",120,120), 40, 40);
-		//canvas.getCanvas().addToCanvas(new ComicFrame(120,120),40,40);
-		
+
 	}
 	
 	public static void main(String[] args) {
-		Run myApp = new Run();
+			Run myApp = new Run();
 	}
 
 }

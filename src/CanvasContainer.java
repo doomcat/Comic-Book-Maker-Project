@@ -16,19 +16,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingConstants;
 
 
-public class CanvasContainer extends InternalBox {
+public class CanvasContainer extends JPanel {
 	private Canvas canvas;
 	private JScrollPane sp;
 	
 	CanvasContainer() {
 		super();
-		setTitle("Canvas");
+		//setTitle("Canvas");
 		canvas = new Canvas();
 		BorderLayout bl = new BorderLayout();
 		setLayout(bl);

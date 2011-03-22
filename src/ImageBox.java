@@ -39,12 +39,23 @@ public class ImageBox extends InternalBox implements ListSelectionListener {
 		images.setLayout(fl);
 		
 		Vector<String> cats = new Vector<String>();
-		File categories = new File("assets");
-		for(File f : categories.listFiles()) {
-			if(f.isDirectory()) {
-				cats.add(f.getName());
+		if(SystemState.isApplet == true) {
+			cats.add("arms");
+			cats.add("cartoon characters");
+			cats.add("faces");
+			cats.add("heads");
+			cats.add("legs");
+			cats.add("miscallaneous");
+			cats.add("torsos");
+		} else {
+			File categories = new File("assets");
+			for(File f : categories.listFiles()) {
+				if(f.isDirectory()) {
+					cats.add(f.getName());
+				}
 			}
 		}
+		
 		JList catList = new JList(cats);
 		sp = new JScrollPane(images);
 		showCategory(cats.firstElement());

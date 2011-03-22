@@ -66,8 +66,8 @@ public class CanvasIcon extends JComponent implements Serializable {
 	public void setupImage() {
 		try {
 			if(file != null) image = ImageIO.read(new File(file));
-			dW = image.getWidth(); dH = image.getHeight();
-			w = dW; h = dH;
+			//dW = image.getWidth(); dH = image.getHeight();
+			//w = dW; h = dH;
 		} catch (IOException e) {
 			SystemState.errors.add(file+" could not be loaded.");
 		}
